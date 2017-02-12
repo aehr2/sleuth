@@ -1,5 +1,5 @@
 Package: sleuth
-Title: Tools for investigating RNA-Seq
+Title: CLaus!!! Tools for investigating RNA-Seq 
 Version: 0.28.1
 Authors@R: c(person("Harold", "Pimentel", , "haroldpimentel@gmail.com", role = c("aut", "cre")))
 Description: Investigate transcript abundance from "kallisto" and differential

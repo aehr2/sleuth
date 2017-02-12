@@ -67,19 +67,22 @@ shrink_df <- function(data, shrink_formula, filter_var) {
   data.frame(data, shrink = predict(fit, data))
 }
 
+#' @export
 msg <- function(..., nl = TRUE) {
   message(..., appendLF = nl)
 }
 
 # shortcut for as.data.frame(x, stringsAsFactors = FALSE)
+#' @export
 as_df <- function(x, ...) {
   as.data.frame(x, stringsAsFactors = FALSE, ...)
 }
 
+#' @export
 adf <- function(...) {
   data.frame(..., stringsAsFactors = FALSE)
 }
-
+#' @export
 dot <- function(count, max_dots = 50) {
   count <- count + 1
   new_line <- FALSE
@@ -91,7 +94,7 @@ dot <- function(count, max_dots = 50) {
 
   count
 }
-
+#' @export
 kld <- function(p, q) {
   stopifnot(length(p) == length(q))
 
@@ -103,6 +106,7 @@ kld <- function(p, q) {
   sum(p * (log(p) - log(q)))
 }
 
+#' @export
 jsd <- function(p, q) {
   p <- p / sum(p)
   q <- q / sum(q)
@@ -111,6 +115,7 @@ jsd <- function(p, q) {
   (kld(p, m) + kld(q, m)) / 2
 }
 
+#' @export
 apply_all_pairs <- function(mat, fun) {
   ids <- colnames(mat)
 

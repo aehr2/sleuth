@@ -241,7 +241,16 @@ sleuth_prep <- function(
     msg("normalizing est_counts")
     est_counts_spread <- spread_abundance_by(obs_raw, "est_counts",
       sample_to_covariates$sample)
-    filter_bool <- apply(est_counts_spread, 1, filter_fun, ...)
+    
+    #### TODO !!!!!
+    
+    
+    # filter_bool <- apply(est_counts_spread, 1, filter_fun, ...)
+    filter_bool <- rownames(est_counts_spread)  %in% TXIrn 
+    names(filter_bool) <- TXIrn ## check if correct
+    #### filter_bool is uses serval times 
+    #### IDEA give function a filter_bool vecotr
+    
     filter_true <- filter_bool[filter_bool]
 
     msg(paste0(sum(filter_bool), ' targets passed the filter'))
@@ -252,6 +261,9 @@ sleuth_prep <- function(
     est_counts_norm <- as_df(t(t(est_counts_spread) / est_counts_sf))
 
     est_counts_norm$target_id <- rownames(est_counts_norm)
+    
+    ##### TODO !!!!
+    
     est_counts_norm <- tidyr::gather(est_counts_norm, sample, est_counts, -target_id)
 
     obs_norm <- est_counts_norm
