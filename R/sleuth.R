@@ -84,6 +84,8 @@ filter_df_by_groups <- function(df, fun, group_df, ...) {
 #' @param norm_fun_counts a function to perform between sample normalization on the estimated counts.
 #' @param norm_fun_tpm a function to perform between sample normalization on the TPM
 #' @param aggregation_column a string of the column name in \code{\link{target_mapping}} to aggregate targets
+#' @param TXIrn a vector of transcript ids which are use for further steps - replace slueh filter !!!!! 
+#' @note Claus Weinholt - 21.02.2016
 #' @return a \code{sleuth} object containing all kallisto samples, metadata,
 #' and summary statistics
 #' @examples # Assume we have run kallisto on a set of samples, and have two treatments,
@@ -103,6 +105,7 @@ sleuth_prep <- function(
   norm_fun_counts = norm_factors,
   norm_fun_tpm = norm_factors,
   aggregation_column = NULL,
+  TXIrn =NULL,
   ...) {
 
   ##############################
@@ -241,29 +244,26 @@ sleuth_prep <- function(
     msg("normalizing est_counts")
     est_counts_spread <- spread_abundance_by(obs_raw, "est_counts",
       sample_to_covariates$sample)
-    
-    #### TODO !!!!!
-    
-    
+
     # filter_bool <- apply(est_counts_spread, 1, filter_fun, ...)
-    filter_bool <- rownames(est_counts_spread)  %in% TXIrn 
-    names(filter_bool) <- TXIrn ## check if correct
+    msg("Claus filter for TXIrn genes - start")  
+    msg(length(TXIrn))
     #### filter_bool is uses serval times 
     #### IDEA give function a filter_bool vecotr
+    filter_bool <- sapply(rownames(est_counts_spread), function(x) sum(x == TXIrn) == 1) 
+    
+    msg("Claus filter for TXIrn genes - end")  
+    
     
     filter_true <- filter_bool[filter_bool]
-
     msg(paste0(sum(filter_bool), ' targets passed the filter'))
     est_counts_sf <- norm_fun_counts(est_counts_spread[filter_bool,])
 
     filter_df <- adf(target_id = names(filter_true))
-
     est_counts_norm <- as_df(t(t(est_counts_spread) / est_counts_sf))
-
     est_counts_norm$target_id <- rownames(est_counts_norm)
     
-    ##### TODO !!!!
-    
+
     est_counts_norm <- tidyr::gather(est_counts_norm, sample, est_counts, -target_id)
 
     obs_norm <- est_counts_norm
@@ -319,7 +319,7 @@ sleuth_prep <- function(
     ret$obs_norm_filt <- dplyr::semi_join(obs_norm, filter_df, by = 'target_id')
     ret$tpm_sf <- tpm_sf
 
-
+    
     msg('summarizing bootstraps')
     bs_summary <- NULL
     if (is.null(aggregation_column)) {

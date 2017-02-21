@@ -1,4 +1,4 @@
-Package: sleuth
+Package: sleuthDev
 Title: CLaus!!! Tools for investigating RNA-Seq 
 Version: 0.28.1
 Authors@R: c(person("Harold", "Pimentel", , "haroldpimentel@gmail.com", role = c("aut", "cre")))
